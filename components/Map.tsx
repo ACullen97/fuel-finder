@@ -6,11 +6,21 @@ import MapView, {Marker}  from 'react-native-maps'
 
 export default function Map(){
     return (<View>
-        <MapView style={styles.map} >
-  
-    {/* <Marker coordinate={{latitude: 37.78825,
-    longitude: -122.4324}} title="Petrol Station"/> */}
-</MapView>;
+        <MapView style={styles.map} initialRegion={{
+    latitude: 51.5072,
+    longitude: 0.1276,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  }}>
+    <Marker coordinate={{ latitude: 51.5172,
+    longitude: 0.1276}} title="petrol station1"/>
+     <Marker coordinate={{ latitude: 51.5002,
+    longitude: 0.1226}} title="petrol station2"/>
+     <Marker coordinate={{ latitude: 51.5322,
+    longitude: 0.1376}} title="petrol station3"/>
+            
+        </MapView>
+
     
         </View>);
 }
