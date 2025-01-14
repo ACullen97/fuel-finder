@@ -1,16 +1,30 @@
 import { View, Text, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import PetrolStations from "@/assets/data/PetrolStation.json";
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo, useRef } from "react";
 import StationCard from "./StationCard";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 
 export default function Map() {
 
     const [selectedStation, setSelectedStation] = useState({});
+    const bottomSheetRef = useRef<BottomSheet>(null);
+
+    const handleSheetChanges = useCallback((index: number) => {
+        console.log('handleSheetChanges', index);
+      }, []);
+
+      const snapPoints = useMemo(() => ['25%', '50%', '90%'], []);
+
+      const handleOpenPress = () => bottomSheetRef.current?.collapse();
+      const handleClosePress = () => bottomSheetRef.current?.close();
 
   return (
-    <View>
+    <>
+   <GestureHandlerRootView style={styles.container}>
       <MapView
+      onPress={() => handleClosePress()}
         style={styles.map}
         initialRegion={{
           latitude: 51.5072,
@@ -22,7 +36,9 @@ export default function Map() {
         {/*TODO: FIX MERKERS GETTING CUT OFF */}
         {PetrolStations.map((petrolStation) => (
           <Marker
-            onPress={() => {setSelectedStation(petrolStation)}}
+            onPress={() => {setSelectedStation(petrolStation);
+                handleOpenPress();
+            }}
             key={petrolStation.id}
             coordinate={{
               latitude: petrolStation.latitude,
@@ -46,8 +62,21 @@ export default function Map() {
           </Marker>
         ))}
       </MapView>
-<StationCard station={selectedStation}/>
-    </View>
+<BottomSheet
+  ref={bottomSheetRef}
+  onChange={handleSheetChanges}
+  snapPoints={snapPoints}
+  enablePanDownToClose={true}
+  backgroundStyle={ {backgroundColor: '#48AAAD' }}
+  handleIndicatorStyle={{backgroundColor: '#fff'}}
+>
+  <BottomSheetView style={styles.contentContainer}>
+    <Text style={{color: '#fff'}}>Awesome 🎉</Text>
+    <StationCard station={selectedStation}/>
+  </BottomSheetView>
+</BottomSheet>
+</GestureHandlerRootView>
+</>
   );
 }
 
@@ -59,5 +88,16 @@ const styles = StyleSheet.create({
   whiteText: {
     color: "white",
   },
-
+  container: {
+    flex: 1,
+    backgroundColor: 'grey',
+  },
+  contentContainer: {
+    flex: 1,
+    padding: 36,
+    alignItems: 'center',
+  },
 });
+
+
+  
