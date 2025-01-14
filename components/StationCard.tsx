@@ -16,10 +16,6 @@ export default function StationCard({ station }) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "white",
-    position: "absolute",
-    bottom: 50,
-    left: 10,
-    right: 10,
+
   },
 });
