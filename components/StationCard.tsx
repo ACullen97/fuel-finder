@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import Accordion from "@/components/Accordion";
+import { BottomSheetView } from "@gorhom/bottom-sheet";
+import AccordionFacilities from "./AccordionFacilities";
 
 export default function StationCard({ station }: { station: object }) {
   console.log(station);
@@ -61,24 +63,76 @@ export default function StationCard({ station }: { station: object }) {
   } else
     return (
       <View>
-        <Text style={styles.Title}>{station.name}</Text>
-        <Text style={{ color: "#fff", right: 70, fontSize: 14, top: -15 }}>
-          Address:{" "}
-        </Text>
-        <Text style={{ color: "#fff", right: 70, fontSize: 14, top: -10 }}>
-          Status:{" "}
-        </Text>
-        <Text style={{ color: "#fff", right: 70, fontSize: 14, top: -5 }}>
-          Overall Rating:{" "}
-        </Text>
-
-        {petrolStations.map((petrolStation, index) => (
-          <Accordion
-            key={index.toString()}
-            title="Prices"
-            details={petrolStation.prices.diesel}
-          />
-        ))}
+        <View style={styles.main}>
+          <Text style={styles.Title}>{station.name}</Text>
+          <Text style={{ color: "#fff", fontSize: 14, top: -15 }}>
+            Address:{" "}
+          </Text>
+          <Text style={{ color: "#fff", fontSize: 14, top: -10 }}>
+            Status:{" "}
+          </Text>
+          <Text style={{ color: "#fff", fontSize: 14, top: -5 }}>
+            Overall Rating:{" "}
+          </Text>
+          <Text/>
+        </View>
+        <View style={styles.wrapper}>
+          {/* {Table Container} */}
+          <View style={styles.table}>
+            {/* {Table Head} */}
+            <View style={styles.table_head}>
+              {/* {Single Row} */}
+              <View style={{ width: "50%" }}>
+                <Text style={styles.table_caption}>Fuel Type</Text>
+              </View>
+              <View style={{ width: "50%" }}>
+                <Text style={styles.table_caption}>Price</Text>
+              </View>
+            </View>
+            {/* {Table Body} */}
+            <View style={styles.table_body}>
+              {/* {Single Row} */}
+              <View style={{ width: "50%" }}>
+                <Text style={styles.table_data}>Unleaded</Text>
+              </View>
+              <View style={{ width: "50%" }}>
+                <Text style={styles.table_data}>131.9</Text>
+              </View>
+            </View>
+            <View style={styles.table_body}>
+              {/* {Single Row} */}
+              <View style={{ width: "50%" }}>
+                <Text style={styles.table_data}>Super Unleaded</Text>
+              </View>
+              <View style={{ width: "50%" }}>
+                <Text style={styles.table_data}>145.3</Text>
+              </View>
+            </View>
+            <View style={styles.table_body}>
+              {/* {Single Row} */}
+              <View style={{ width: "50%" }}>
+                <Text style={styles.table_data}>Diesel</Text>
+              </View>
+              <View style={{ width: "50%" }}>
+                <Text style={styles.table_data}>145.9</Text>
+              </View>
+            </View>
+            <View style={styles.table_body}>
+              {/* {Single Row} */}
+              <View style={{ width: "50%" }}>
+                <Text style={styles.table_data}>Premium Diesel</Text>
+              </View>
+              <View style={{ width: "50%" }}>
+                <Text style={styles.table_data}>155.5</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+        <View>
+            <Text/>
+          <Accordion title="Opening Times" details={"Hello from Opening Times"}></Accordion>
+          <AccordionFacilities title="Facilities" details={"Hello from Facilities"}></AccordionFacilities>
+        </View>
       </View>
     );
 }
@@ -86,9 +140,38 @@ export default function StationCard({ station }: { station: object }) {
 const styles = StyleSheet.create({
   Title: {
     color: "#fff",
-    right: 70,
     fontSize: 20,
     fontWeight: "bold",
     top: -25,
+  },
+  main:{
+ 
+    },
+
+  wrapper: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#1E998D",
+    borderRadius:10,
+    padding: 0,
+  },
+  table: {
+    margin: 15,
+  },
+  table_head: {
+    flexDirection: "row",
+  },
+  table_caption: {
+    color: "#fff",
+    fontWeight: "bold",
+    paddingBottom: 10
+  },
+  table_body: {
+    flexDirection: "row",
+  },
+  table_data: {
+    color: "#fff",
+    padding: 3,
+    paddingLeft: 5
   },
 });

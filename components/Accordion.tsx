@@ -20,7 +20,7 @@ export default function Accordion({
   const [animation] = useState(new Animated.Value(0));
   const heightAnimationInterpolation = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 100],
+    outputRange: [0, 180],
   });
 
   function toggleAccordion() {
@@ -54,8 +54,85 @@ export default function Accordion({
       </TouchableWithoutFeedback>
       <Animated.View
         style={[styles.content, { height: heightAnimationInterpolation }]}
-      >
-        <Text style={styles.details}>{details}</Text>
+      >         <View style={styles.wrapper}>
+                  {/* {Table Container} */}
+                  <View style={styles.table}>
+                    {/* {Table Head} */}
+                    <View style={styles.table_head}>
+                      {/* {Single Row} */}
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_caption}>Day</Text>
+                      </View>
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_caption}>Time</Text>
+                      </View>
+                    </View>
+                    {/* {Table Body} */}
+                    <View style={styles.table_body}>
+                      {/* {Single Row} */}
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_data}>Monday</Text>
+                      </View>
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_data}>24 hours</Text>
+                      </View>
+                    </View>
+                    <View style={styles.table_body}>
+                      {/* {Single Row} */}
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_data}>Tuesday</Text>
+                      </View>
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_data}>24 hours</Text>
+                      </View>
+                    </View>
+                    <View style={styles.table_body}>
+                      {/* {Single Row} */}
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_data}>Wednesday</Text>
+                      </View>
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_data}>24 hours</Text>
+                      </View>
+                    </View>
+                    <View style={styles.table_body}>
+                      {/* {Single Row} */}
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_data}>Thursday</Text>
+                      </View>
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_data}>24 hours</Text>
+                      </View>
+                    </View>
+                    <View style={styles.table_body}>
+                      {/* {Single Row} */}
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_data}>Friday</Text>
+                      </View>
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_data}>24 hours</Text>
+                      </View>
+                    </View>
+                    <View style={styles.table_body}>
+                      {/* {Single Row} */}
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_data}>Saturday</Text>
+                      </View>
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_data}>24 hours</Text>
+                      </View>
+                    </View>
+                    <View style={styles.table_body}>
+                      {/* {Single Row} */}
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_data}>Sunday</Text>
+                      </View>
+                      <View style={{ width: "50%" }}>
+                        <Text style={styles.table_data}>24 hours</Text>
+                      </View>
+                    </View>
+                  </View>
+                </View>
       </Animated.View>
     </View>
   );
@@ -82,5 +159,28 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "bold",
     color: "white",
+  },
+  wrapper: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+ 
+  },
+  table: {
+    margin: 15,
+  },
+  table_head: {
+    flexDirection: "row",
+  },
+  table_caption: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  table_body: {
+    flexDirection: "row",
+  },
+  table_data: {
+    color: "#fff",
+    padding: 3
   },
 });
