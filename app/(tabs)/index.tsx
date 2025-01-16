@@ -4,10 +4,12 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import LocationSearch from '@/components/autocompleteSearchBar'
 
 export default function HomeScreen() {
   return (
         <Map></Map>
+        //<LocationSearch></LocationSearch>
    
   );
 }
