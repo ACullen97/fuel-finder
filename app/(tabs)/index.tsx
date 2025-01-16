@@ -1,3 +1,4 @@
+
 import { Image, View, StyleSheet, Platform } from "react-native"
 import Map from "@/components/Map"
 import Header from "../../components/Header"
@@ -13,6 +14,7 @@ export default function HomeScreen() {
       <Map />
     </View>
   )
+
 }
 
 const styles = StyleSheet.create({

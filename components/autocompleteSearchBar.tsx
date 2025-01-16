@@ -13,7 +13,7 @@ import {
   } from "react-native"
   import "react-native-get-random-values"
   import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context"
-  import { getCoords } from "../api/api"
+  import { getCoords } from "../api/geocodeApi"
   import ParallaxScrollView from "@/components/ParallaxScrollView"
   import { ThemedText } from "@/components/ThemedText"
   import { ThemedView } from "@/components/ThemedView"
