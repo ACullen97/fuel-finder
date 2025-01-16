@@ -1,21 +1,28 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-import Map from '@/components/Map'
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { Image, View, StyleSheet, Platform } from "react-native"
+import Map from "@/components/Map"
+import Header from "../../components/Header"
+import { HelloWave } from "@/components/HelloWave"
+import ParallaxScrollView from "@/components/ParallaxScrollView"
+import { ThemedText } from "@/components/ThemedText"
+import { ThemedView } from "@/components/ThemedView"
 
 export default function HomeScreen() {
   return (
-        <Map></Map>
-   
-  );
+    <View style={styles.container}>
+      <Header title="" />
+      <Map />
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
   titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   stepContainer: {
@@ -27,6 +34,6 @@ const styles = StyleSheet.create({
     width: 290,
     bottom: 0,
     left: 0,
-    position: 'absolute',
+    position: "absolute",
   },
-});
+})
