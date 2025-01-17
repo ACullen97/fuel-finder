@@ -72,7 +72,7 @@ export default function StationCard({ station }: { station: object }) {
         <View style={styles.main}>
           <Text style={styles.Title}>{station.name}</Text>
           <Text style={{ color: "#fff", fontSize: 14, top: -15 }}>
-            Address:{" "}
+            Address:{station.address}
           </Text>
           <Text style={{ color: "#fff", fontSize: 14, top: -10 }}>
             Status:{" "}
@@ -117,7 +117,7 @@ export default function StationCard({ station }: { station: object }) {
                 <Text style={styles.table_data}>Unleaded</Text>
               </View>
               <View style={{ width: "50%" }}>
-                <Text style={styles.table_data}>131.9</Text>
+                <Text style={styles.table_data}>station.priceE10</Text>
               </View>
             </View>
             <View style={styles.table_body}>
