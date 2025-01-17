@@ -84,7 +84,7 @@ export default function Map() {
                 }}
               >
                 <Text style={styles.whiteText}>
-                  {petrolStation.priceE10}p
+                  {petrolStation.priceE10}
                 </Text>
               </View>
             </Marker>
