@@ -1,5 +1,6 @@
 import React from "react"
 import { View, Text, TextInput, Button, StyleSheet } from "react-native"
+import LocationSearch from "./autocompleteSearchBar"
 
 interface HeaderProps {
   title: string
@@ -10,8 +11,9 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
     <View style={styles.header}>
       <Text style={styles.headerText}>{title}</Text>
       <View style={styles.inputContainer}>
-        <TextInput style={styles.input} placeholder="Search..." />
-        <Button title="Go" onPress={() => {}} />
+        <LocationSearch />
+        {/* <TextInput style={styles.input} placeholder="Search..." /> */}
+        {/* <Button title="Go" onPress={() => {}} /> */}
       </View>
     </View>
   )
