@@ -11,6 +11,7 @@ export default function Map() {
   const [selectedStation, setSelectedStation] = useState({})
   const [petrolStations, setPetrolStations] = useState<any[]>([])
 
+  const [loading, setLoading] = useState(true);
   const bottomSheetRef = useRef<BottomSheet>(null)
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
@@ -40,17 +41,24 @@ export default function Map() {
           name: station.brand,
           latitude: station.latitude,
           longitude: station.longitude,
-          priceE10: (station.E10) *100, // for example E10
+          priceE10: (station.E10) *100, 
+          priceE5: (station.E5) *100,
+          priceB7: (station.B7) *100,
+          priceSDV: (station.SDV) *100,
           address: station.address,
 
         }))
         setPetrolStations(transformedStations)
+        setLoading(false);
       })
       .catch((err) => {
         console.warn("Failed to fetch stations:", err)
       })
   }, [])
 
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <>

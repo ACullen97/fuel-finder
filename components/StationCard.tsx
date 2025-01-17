@@ -126,7 +126,7 @@ export default function StationCard({ station }: { station: object }) {
                 <Text style={styles.table_data}>Super Unleaded</Text>
               </View>
               <View style={{ width: "50%" }}>
-                <Text style={styles.table_data}>145.3</Text>
+                <Text style={styles.table_data}>{station.priceE5}</Text>
               </View>
             </View>
             <View style={styles.table_body}>
@@ -135,7 +135,7 @@ export default function StationCard({ station }: { station: object }) {
                 <Text style={styles.table_data}>Diesel</Text>
               </View>
               <View style={{ width: "50%" }}>
-                <Text style={styles.table_data}>145.9</Text>
+                <Text style={styles.table_data}>{station.priceB7}</Text>
               </View>
             </View>
             <View style={styles.table_body}>
@@ -144,7 +144,7 @@ export default function StationCard({ station }: { station: object }) {
                 <Text style={styles.table_data}>Premium Diesel</Text>
               </View>
               <View style={{ width: "50%" }}>
-                <Text style={styles.table_data}>155.5</Text>
+                <Text style={styles.table_data}>{station.priceSDV}</Text>
               </View>
             </View>
           </View>
