@@ -2,9 +2,9 @@ import axios from 'axios'
 //import { apiErrors } from '../errors/api-error-handling'
 
 //set up the api
-const GOOGLE_API_KEY = 'AIzaSyBU7GTmJQR1xJO4fbz08ew1AJ1HBa1brG4'; //this will need to go in .env later
+const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY; 
 const api = axios.create({
-    baseURL: 'https://maps.googleapis.com/maps/api/geocode/json'
+    baseURL: process.env.GOOGLE_GEOCODE_API_URL,
 });
 
 //gets the coordinates from the location - town/city

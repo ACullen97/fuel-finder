@@ -107,7 +107,7 @@ import {
         return
       }
   
-      const apiKey = "AIzaSyBU7GTmJQR1xJO4fbz08ew1AJ1HBa1brG4" //will need to go in a .env
+      const apiKey = process.env.GOOGLE_API_KEY;
       const proxy = "https://cors-anywhere.herokuapp.com/" //temp proxy for CORS errors
       const endpoint = `${proxy}https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&components=country:GB&key=${apiKey}` //this endpoint is correct
       //const endpoint = `http://localhost:3001/api/autocomplete?input=${input}`;  ---This should work when running a server but there is a problem
