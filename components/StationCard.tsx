@@ -1,13 +1,13 @@
 import { View, Text, StyleSheet, Button } from "react-native";
 import Accordion from "@/components/Accordion";
-import BottomSheet, {
-  BottomSheetView,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import AccordionFacilities from "./AccordionFacilities";
 import { Linking } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 
 export default function StationCard({ station }: { station: object }) {
   console.log(station);
@@ -69,18 +69,13 @@ export default function StationCard({ station }: { station: object }) {
   } else
     return (
       <GestureHandlerRootView>
-        <BottomSheetScrollView>
+        <ScrollView>
           <View style={styles.main}>
             <Text style={styles.Title}>{station.name}</Text>
             <Text style={{ color: "#fff", fontSize: 14, padding: 3 }}>
-              Address:{" "}
+              Address: {station.address}
             </Text>
-            <Text style={{ color: "#fff", fontSize: 14, padding: 3 }}>
-              Status:{" "}
-            </Text>
-            <Text style={{ color: "#fff", fontSize: 14, padding: 3 }}>
-              Overall Rating:{" "}
-            </Text>
+
             <Text />
           </View>
           <View>
@@ -167,7 +162,7 @@ export default function StationCard({ station }: { station: object }) {
               details={"Hello from Facilities"}
             ></AccordionFacilities>
           </View>
-        </BottomSheetScrollView>
+        </ScrollView>
       </GestureHandlerRootView>
     );
 }

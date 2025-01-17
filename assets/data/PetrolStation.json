@@ -3,6 +3,7 @@
       {
         "id": 1,
         "name": "London Central Fuel",
+        "address": "23 Park Lane",
         "latitude": 51.5074,
         "longitude": -0.1278,
         "price": 137.9
@@ -10,6 +11,7 @@
       {
         "id": 2,
         "name": "West End Gas Station",
+        "address": "2 Otley road",
         "latitude": 51.5145,
         "longitude": -0.1491,
         "price": 134.6
@@ -17,6 +19,7 @@
       {
         "id": 3,
         "name": "Thames River Fuel Stop",
+        "address": "5 Headrow Lane",
         "latitude": 51.5081,
         "longitude": -0.1143,
         "price": 123.4
@@ -24,6 +27,7 @@
       {
         "id": 4,
         "name": "East London Fuels",
+        "address": "4 Albion Street",
         "latitude": 51.5202,
         "longitude": -0.0594,
         "price": 187.6
@@ -31,9 +35,11 @@
       {
         "id": 5,
         "name": "South Bank Petrol",
+        "address": " 5 London Eye sq.",
         "latitude": 51.5033,
         "longitude": -0.1195,
         "price": 159.4
+        
       }
     ]
   
