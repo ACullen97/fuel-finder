@@ -1,9 +1,13 @@
 import { View, Text, StyleSheet, Button } from "react-native";
 import Accordion from "@/components/Accordion";
-import { BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import AccordionFacilities from "./AccordionFacilities";
 import { Linking } from "react-native";
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 
 export default function StationCard({ station }: { station: object }) {
   console.log(station);
@@ -64,99 +68,102 @@ export default function StationCard({ station }: { station: object }) {
     return <Text></Text>;
   } else
     return (
-      <View>
-        <View style={styles.main}>
-          <Text style={styles.Title}>{station.name}</Text>
-          <Text style={{ color: "#fff", fontSize: 14, top: -15 }}>
-            Address:{" "}
-          </Text>
-          <Text style={{ color: "#fff", fontSize: 14, top: -10 }}>
-            Status:{" "}
-          </Text>
-          <Text style={{ color: "#fff", fontSize: 14, top: -5 }}>
-            Overall Rating:{" "}
-          </Text>
-          <Text />
-        </View>
-        <View>
-          {" "}
-          <Button
+      <GestureHandlerRootView>
+        <ScrollView>
+          <View style={styles.main}>
+            <Text style={styles.Title}>{station.name}</Text>
+            <Text style={{ color: "#fff", fontSize: 14, padding: 3 }}>
+              Address: {station.address}
+            </Text>
 
-            title="Open in Maps"
-            onPress={() => Linking.openURL(`https://www.google.com/maps/?q=${station.latitude},${station.longitude}`)}
-            
-          />
-          <Text/>
-          <Button
-            title="Navigate"
-            onPress={() => Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${station.latitude},${station.longitude}`)}
-          />
-          <Text/>
-        </View>
-        <View style={styles.wrapper}>
-          {/* {Table Container} */}
-          <View style={styles.table}>
-            {/* {Table Head} */}
-            <View style={styles.table_head}>
-              {/* {Single Row} */}
-              <View style={{ width: "50%" }}>
-                <Text style={styles.table_caption}>Fuel Type</Text>
+            <Text />
+          </View>
+          <View>
+            {" "}
+            <Button
+              title="Open in Maps"
+              onPress={() =>
+                Linking.openURL(
+                  `https://www.google.com/maps/?q=${station.latitude},${station.longitude}`
+                )
+              }
+            />
+            <Text />
+            <Button
+              title="Navigate"
+              onPress={() =>
+                Linking.openURL(
+                  `https://www.google.com/maps/dir/?api=1&destination=${station.latitude},${station.longitude}`
+                )
+              }
+            />
+            <Text />
+          </View>
+          <View style={styles.wrapper}>
+            {/* {Table Container} */}
+            <View style={styles.table}>
+              {/* {Table Head} */}
+              <View style={styles.table_head}>
+                {/* {Single Row} */}
+                <View style={{ width: "50%" }}>
+                  <Text style={styles.table_caption}>Fuel Type</Text>
+                </View>
+                <View style={{ width: "50%" }}>
+                  <Text style={styles.table_caption}>Price</Text>
+                </View>
               </View>
-              <View style={{ width: "50%" }}>
-                <Text style={styles.table_caption}>Price</Text>
+              {/* {Table Body} */}
+              <View style={styles.table_body}>
+                {/* {Single Row} */}
+                <View style={{ width: "50%" }}>
+                  <Text style={styles.table_data}>Unleaded</Text>
+                </View>
+                <View style={{ width: "50%" }}>
+                  <Text style={styles.table_data}>131.9</Text>
+                </View>
               </View>
-            </View>
-            {/* {Table Body} */}
-            <View style={styles.table_body}>
-              {/* {Single Row} */}
-              <View style={{ width: "50%" }}>
-                <Text style={styles.table_data}>Unleaded</Text>
+              <View style={styles.table_body}>
+                {/* {Single Row} */}
+                <View style={{ width: "50%" }}>
+                  <Text style={styles.table_data}>Super Unleaded</Text>
+                </View>
+                <View style={{ width: "50%" }}>
+                  <Text style={styles.table_data}>145.3</Text>
+                </View>
               </View>
-              <View style={{ width: "50%" }}>
-                <Text style={styles.table_data}>131.9</Text>
+              <View style={styles.table_body}>
+                {/* {Single Row} */}
+                <View style={{ width: "50%" }}>
+                  <Text style={styles.table_data}>Diesel</Text>
+                </View>
+                <View style={{ width: "50%" }}>
+                  <Text style={styles.table_data}>145.9</Text>
+                </View>
               </View>
-            </View>
-            <View style={styles.table_body}>
-              {/* {Single Row} */}
-              <View style={{ width: "50%" }}>
-                <Text style={styles.table_data}>Super Unleaded</Text>
-              </View>
-              <View style={{ width: "50%" }}>
-                <Text style={styles.table_data}>145.3</Text>
-              </View>
-            </View>
-            <View style={styles.table_body}>
-              {/* {Single Row} */}
-              <View style={{ width: "50%" }}>
-                <Text style={styles.table_data}>Diesel</Text>
-              </View>
-              <View style={{ width: "50%" }}>
-                <Text style={styles.table_data}>145.9</Text>
-              </View>
-            </View>
-            <View style={styles.table_body}>
-              {/* {Single Row} */}
-              <View style={{ width: "50%" }}>
-                <Text style={styles.table_data}>Premium Diesel</Text>
-              </View>
-              <View style={{ width: "50%" }}>
-                <Text style={styles.table_data}>155.5</Text>
+              <View style={styles.table_body}>
+                {/* {Single Row} */}
+                <View style={{ width: "50%" }}>
+                  <Text style={styles.table_data}>Premium Diesel</Text>
+                </View>
+                <View style={{ width: "50%" }}>
+                  <Text style={styles.table_data}>155.5</Text>
+                </View>
               </View>
             </View>
           </View>
-        </View>
-        <View>
-          <Text />
-          <Accordion
-            title="Opening Times"
-            details={"Hello from Opening Times"}
-          ></Accordion>
-          <AccordionFacilities
-            title="Facilities"
-            details={"Hello from Facilities"}
-          ></AccordionFacilities>
-        </View>
-      </View>
+          <View>
+            <Text />
+            <Accordion
+              title="Opening Times"
+              details={"Hello from Opening Times"}
+            ></Accordion>
+            <AccordionFacilities
+              title="Facilities"
+              details={"Hello from Facilities"}
+            ></AccordionFacilities>
+          </View>
+        </ScrollView>
+      </GestureHandlerRootView>
     );
 }
 
@@ -165,7 +172,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 20,
     fontWeight: "bold",
-    top: -25,
   },
   main: {},
 

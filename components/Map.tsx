@@ -13,8 +13,9 @@ export default function Map() {
 
   const bottomSheetRef = useRef<BottomSheet>(null)
   const handleSheetChanges = useCallback((index: number) => {
-    console.log("handleSheetChanges", index)
-  }, [])
+    console.log("handleSheetChanges", index);
+  }, []);
+
 
   const snapPoints = useMemo(() => ["25%", "50%", "90%"], [])
   const handleOpenPress = () => bottomSheetRef.current?.collapse()
@@ -60,8 +61,8 @@ export default function Map() {
           {petrolStations.map((petrolStation) => (
             <Marker
               onPress={() => {
-                setSelectedStation(petrolStation)
-                handleOpenPress()
+                setSelectedStation(petrolStation);
+                handleOpenPress();
               }}
               key={petrolStation.id}
               coordinate={{
@@ -101,7 +102,7 @@ export default function Map() {
         </BottomSheet>
       </GestureHandlerRootView>
     </>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -121,4 +122,4 @@ const styles = StyleSheet.create({
     padding: 36,
     alignItems: "center",
   },
-})
+});
