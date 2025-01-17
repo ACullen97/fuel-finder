@@ -40,7 +40,9 @@ export default function Map() {
           name: station.brand,
           latitude: station.latitude,
           longitude: station.longitude,
-          price: station.E10, // for example E10
+          priceE10: (station.E10) *100, // for example E10
+          address: station.address,
+
         }))
         setPetrolStations(transformedStations)
       })
@@ -82,7 +84,7 @@ export default function Map() {
                 }}
               >
                 <Text style={styles.whiteText}>
-                  {petrolStation.price}p
+                  {petrolStation.priceE10}p
                 </Text>
               </View>
             </Marker>
