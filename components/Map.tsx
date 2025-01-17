@@ -30,12 +30,10 @@ export default function Map() {
   }
 
   useEffect(() => {
-    // For example, use radius = 10 (or anything you like)
     const radius = 10
 
     getPricesRadius(initialRegion.latitude, initialRegion.longitude, radius)
       .then((stationsFromApi) => {
-        // Transform API data into the shape you need
         const transformedStations = stationsFromApi.map((station: any) => ({
           id: station.site_id,
           name: station.brand,
