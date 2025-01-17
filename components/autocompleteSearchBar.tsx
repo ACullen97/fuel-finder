@@ -1,7 +1,5 @@
 import {
-    Image,
     StyleSheet,
-    Platform,
     TextInput,
     Button,
     Text,
@@ -9,22 +7,21 @@ import {
     FlatList,
     TouchableOpacity,
     Dimensions,
-    ScrollView
   } from "react-native"
   import "react-native-get-random-values"
   import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context"
   import { getCoords } from "../api/geocodeApi"
-  import ParallaxScrollView from "@/components/ParallaxScrollView"
   import { ThemedText } from "@/components/ThemedText"
-  import { ThemedView } from "@/components/ThemedView"
   import React, { useState, useEffect } from "react"
   import * as Location from "expo-location" //for the users location and permission
   import { validateLocation } from "../utils/locationValidation" //validates the typed location
   import { checkConnection } from "../utils/networkValidation" //validates user network
   import debounce from "lodash/debounce"
   import axios from "axios"
+
   
   const LocationSearch = () => { 
+
     const [typedLocation, setTypedLocation] = useState("") //location that the user types in
     const [response, setResponse] = useState<any>(null) //fir the api response
     const [currentLocation, setCurrentLocation] =
@@ -35,7 +32,7 @@ import {
     const [suggestions, setSuggestions] = useState<string[]>([])
   
 
-    //sends users typed location and triggers getCoords, which gets the coordinates from google api
+    //sends users typed location and triggers getCoords, which gets the coordinates from google api - moved to location context
     const sendToApi = async (query) => {
       let params;
       // const isConnected = await checkConnection()
@@ -51,7 +48,7 @@ import {
         console.error(error)
         return
       }
-      params = {address: query}; //for the lcoation tyoed by the user  
+      params = {address: query}; //for the lcoation typed by the user  
         
       } else if (query.place_id) {
         params={place_id: query.place_id } //for the location selected from teh suggestions
@@ -70,7 +67,7 @@ import {
       }
     }
   
-    //gets the users current location
+    //gets the users current location  - moved to location context
     const getLocationPermission = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync()
       if (status !== "granted") {
@@ -93,14 +90,14 @@ import {
           currentLocation.coords.longitude
       )
     }
-    //The code below will get the users current location automatically when component is loaded
-    // if we want to use it we can just uncomment this code(don't need to add anything else as it works!)
+          //The code below will get the users current location automatically when component is loaded
+          // if we want to use it we can just uncomment this code(don't need to add anything else as it works!)
+        
+          // useEffect(() => {
+          //  getLocationPermission()
+          // },[]);
   
-    // useEffect(() => {
-    //  getLocationPermission()
-    // },[]);
-  
-    //gets the suggestions from google api
+    //gets the suggestions from google api - moved to location context
     const fetchSuggestions = async (input: any) => {
       console.log(input, "<<<input in fetch suggestions") //debug******
   
@@ -132,9 +129,6 @@ import {
         }
         //console.log(predictions)
         console.log("Full prediction object:", predictions[0])// debug*****
-  
-  
-  
       } catch (error) {
         console.error("Error fetching autocomplete suggestions:", error)
       }
@@ -145,7 +139,7 @@ import {
     //code for location autocomplete
     const debouncedFetchSuggestions = debounce(fetchSuggestions, 300) //prevenst the api being called after each keypress- gives it a delay
   
-    //gets the debounced suggestions when the user types the location
+    //gets the debounced suggestions when the user types the location - moved to context
     const handleInputChange = (text: any) => {
       //problem in here
       setTypedLocation(text)
@@ -153,12 +147,12 @@ import {
       debouncedFetchSuggestions(text)
     }
   
-    //this allows the user to select from the suggestions dropdown container
+    //this allows the user to select from the suggestions dropdown container - moved to context
     const handleSuggestionSelect = async ({ description, place_id }) => {
       console.log("Selected place:", description, "Place ID:", place_id);
   
       try {
-            // Fetch lat and long using the place_id
+      // Fetch lat and long using the place_id
       const coords = await sendToApi({place_id});
       console.log("Coordinates for selected place:", coords);
       setTypedLocation('')
@@ -177,7 +171,7 @@ import {
       console.log("Suggestions length:", suggestions.length);
       console.log("Suggestions:", suggestions);
    
-      // sendToApi(suggestion)
+      // sendToApi(suggestion)***not needed
       
     }
   
@@ -185,122 +179,36 @@ import {
     const suggestionsBox = Dimensions.get("window").height //Dimensions comes from react-native
   
     return (
-  <ParallaxScrollView
-        style={{flex: 1}}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-        headerImage={
-          <Image
-            source={require("@/assets/images/partial-react-logo.png")}
-            style={styles.reactLogo}
-          />
-        }
-      >
-        <SafeAreaProvider>
-          <SafeAreaView style={{flex:1}}>
-            <ThemedView style={styles.titleContainer}>
-              <ThemedText type="title">Petrol Prices App</ThemedText>
-            </ThemedView>
-            <ThemedView style={styles.stepContainer}>
-              <ThemedText type="subtitle">
-                This uses expo-location lib to get the users location{" "}
-              </ThemedText>
-              <ThemedText>
-                <ThemedText type="defaultSemiBold"></ThemedText>
-                <Text>
-                  Current location comes from either: gps, cell towers etc OR the
-                  browser-depends on what the user is using
-                </Text>
-                {"\n"}
-                <Button
-                  title="Use your current location"
-                  onPress={getLocationPermission}
-                />
-                <ThemedText>
-                  <Text>
-                    {"\n"}Your current location is{"\n"}
-                    latitude: {latitude} {"\n"}longitude: {longitude}
-                   
-                    {"\n"}
-                   
-                  </Text>
-                </ThemedText>
-              </ThemedText>
-            </ThemedView>
-            <ThemedText>
-              <Text>Search Location</Text>
-            </ThemedText>
-          
-            <ThemedText>
-              This search box utilises Google places api and should autocomplete
-              suggested place names{"\n"}
-              {"\n"}
-              <TextInput
-                style={styles.input}
-                placeholder="Enter a location"
-                value={typedLocation}
-                onChangeText={handleInputChange}
-                onSubmitEditing={() => sendToApi(typedLocation)}
-                returnKeyType="done"
-              />
-              
-              <FlatList
-                data={suggestions}
-                keyExtractor={(item, index) => `${item.place_id}-${index}`}
-                renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => {handleSuggestionSelect(item)}}>  
-                    <Text >{item.description}</Text>
-                  </TouchableOpacity>
-                )}
-                style={[styles.suggestionsContainer, { maxHeight: suggestionsBox * 0.4 },]} //this is for the container that displays the suggestions
-              />
+
+    <View  style={styles.inputContainer} >
+        <ThemedText>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter a location"
+            value={typedLocation}
+            onChangeText={handleInputChange}
+            onSubmitEditing={() => sendToApi(typedLocation)}
+            returnKeyType="done"
+          />       
+          {suggestions.length > 0 && (    
+            <FlatList
+              data={suggestions}
+              keyExtractor={(item, index) => `${item.place_id}-${index}`}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => {handleSuggestionSelect(item)}}>  
+                  <Text >{item.description}</Text>
+                </TouchableOpacity>)}
+              style={[styles.suggestionsContainer, { borderWidth: 1, borderColor: 'red' },{ maxHeight: suggestionsBox * 0.4 }]} //this is for the container that displays the suggestions
+            />
+          )} 
               {/* <Button title="Send to API" onPress={() => sendToApi(typedLocation)}/> NO LONGER NEEDED-UNLESS WE WANT A BUTTON*/}
               {/* wrapped the bit below in a function */}
-              <TouchableOpacity onPress={() => sendToApi(typedLocation)}> 
-                <Text>Search Location</Text> 
-              </TouchableOpacity>
-              
-              {response ? (<Text>{JSON.stringify(response)}</Text>) : (
-              <Text>{'\n'}No response yet.</Text>)}
-  
-              {'\n'}
-              {response && (<Text>latitude: {response.lat} {'\n'} longitude: {response.lng}</Text>)}
-            </ThemedText>
-  
-            {/* <ThemedText>
-              Enter your desired location: {"\n"}
-              <ThemedText type="defaultSemiBold">
-                {"\n"}
-                <TextInput
-                  style={styles.input}
-                  onChangeText={setTypedLocation}
-                  value={typedLocation}
-                  onSubmitEditing={sendToApi}
-                  returnKeyType="send" //turns the enter key into a send key
-                />
-                {"\n"}
-                <Text>
-                  sends the typed location to google api & returns lat and long
-                </Text>
-                {"\n"}
-                <Button title="Send to API" onPress={sendToApi} />
-                {"\n"}
-                {response && (
-                  <ThemedText>
-                    {"\n"}
-                    <Text>
-                      The location of {typedLocation} is: {"\n"}
-                    </Text>
-                    <Text>Latitude: {response.lat}</Text>
-                    {"\n"}
-                    <Text>Longitude: {response.lng}</Text>
-                  </ThemedText>
-                )}
-              </ThemedText>
-            </ThemedText> */}
-          </SafeAreaView>
-        </SafeAreaProvider>
-      </ParallaxScrollView>
+              <TouchableOpacity 
+              onPress={() => sendToApi(typedLocation)}
+                style={{ display: "none" }} />        
+          </ThemedText>     
+        <Button title="Go" onPress={getLocationPermission}/>
+      </View>
     )
   }
   
@@ -321,28 +229,34 @@ import {
       left: 0,
       position: "absolute",
     },
+    inputContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
     input: {
       height: 40,
-      width: 250,
-      margin: 12,
-      borderWidth: 2,
-      borderColor: "lightblue",
-      borderRadius: 10,
-      padding: 5,
-      color: "black",
-      backgroundColor: "white",
+      width:'80%',
+      maxWidth:300,
+      borderColor: "#cC7F5cF2",
+      borderWidth: 1,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      marginRight: 10,
+      color: "#21130d",
+      backgroundColor: "#fff",
+      flex: 1,
     },
-    textInput: {
-      height: 40,
-      width: 250,
-      margin: 12,
-      borderWidth: 2,
-      borderColor: "lightblue",
-      borderRadius: 10,
-      padding: 5,
-      color: "black",
-      backgroundColor: "white",
-    },
+    // textInput: {
+    //   height: 40,
+    //   width: 250,
+    //   margin: 12,
+    //   borderWidth: 2,
+    //   borderColor: "lightblue",
+    //   borderRadius: 10,
+    //   padding: 5,
+    //   color: "black",
+    //   backgroundColor: "white",
+    // },
     suggestionsContainer: {
       position: "relative", // Align with parent
       zIndex: 2, // Ensure it appears above other elements
