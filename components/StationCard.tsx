@@ -9,14 +9,24 @@ import {
   ScrollView,
 } from "react-native-gesture-handler";
 
-export default function StationCard({ station }: { station: object }) {
+interface Station {
+  priceE5: number;
+  priceE10: number;
+  priceB7: number;
+  priceSDV: number;
+}
 
-  if (station.priceE5 == 0) {
-    station.priceE5 = "Unavailable";
-  }
-  if (station.priceSDV == 0) {
-    station.priceSDV = "Unavailable";
-  }
+export default function StationCard({ station }: { station: Station }) {
+
+  const formatPrice = (price: number | undefined) => {
+    if (!price && price === 0) return "Unavailable";
+    return parseFloat(price.toFixed(1));
+  };
+
+  station.priceE5 = formatPrice(station.priceE5);
+  station.priceE10 = formatPrice(station.priceE10);
+  station.priceB7 = formatPrice(station.priceB7);
+  station.priceSDV = formatPrice(station.priceSDV);
 
 
   if (Object.keys(station).length === 0) {
