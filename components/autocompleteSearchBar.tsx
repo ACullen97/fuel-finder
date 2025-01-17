@@ -18,6 +18,7 @@ import {
   import { checkConnection } from "../utils/networkValidation" //validates user network
   import debounce from "lodash/debounce"
   import axios from "axios"
+  import { Image } from 'expo-image'
 
   
   const LocationSearch = () => { 
@@ -207,7 +208,19 @@ import {
               onPress={() => sendToApi(typedLocation)}
                 style={{ display: "none" }} />        
           </ThemedText>     
-        <Button title="Go" onPress={getLocationPermission}/>
+          <TouchableOpacity onPress={getLocationPermission}>
+            <Image source={require('../assets/images/location-icon.png')} 
+            style={{ 
+              width:40, 
+              height: 40, 
+              borderWidth: 1,
+              borderColor: "black",
+              borderRadius:50, 
+              padding:20, 
+              backgroundColor:'black',
+              }}/>
+          </TouchableOpacity>
+        {/* <Button title="Go" onPress={getLocationPermission}/> */}
       </View>
     )
   }
@@ -216,18 +229,11 @@ import {
     titleContainer: {
       flexDirection: "row",
       alignItems: "center",
-      gap: 8,
+      gap: 4,
     },
     stepContainer: {
-      gap: 8,
+      gap:5,
       marginBottom: 8,
-    },
-    reactLogo: {
-      height: 178,
-      width: 290,
-      bottom: 0,
-      left: 0,
-      position: "absolute",
     },
     inputContainer: {
       flexDirection: "row",
@@ -235,13 +241,14 @@ import {
     },
     input: {
       height: 40,
-      width:'80%',
+      width:'90%',
       maxWidth:300,
       borderColor: "#cC7F5cF2",
       borderWidth: 1,
       borderRadius: 5,
       paddingHorizontal: 10,
-      marginRight: 10,
+      paddingTop:5,
+      paddingBottom: 5,
       color: "#21130d",
       backgroundColor: "#fff",
       flex: 1,
