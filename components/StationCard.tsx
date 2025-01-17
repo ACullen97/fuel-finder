@@ -1,7 +1,9 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Button } from "react-native";
 import Accordion from "@/components/Accordion";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import AccordionFacilities from "./AccordionFacilities";
+import { Linking } from "react-native";
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 
 export default function StationCard({ station }: { station: object }) {
   console.log(station);
@@ -74,6 +76,21 @@ export default function StationCard({ station }: { station: object }) {
           <Text style={{ color: "#fff", fontSize: 14, top: -5 }}>
             Overall Rating:{" "}
           </Text>
+          <Text />
+        </View>
+        <View>
+          {" "}
+          <Button
+
+            title="Open in Maps"
+            onPress={() => Linking.openURL(`https://www.google.com/maps/?q=${station.latitude},${station.longitude}`)}
+            
+          />
+          <Text/>
+          <Button
+            title="Navigate"
+            onPress={() => Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${station.latitude},${station.longitude}`)}
+          />
           <Text/>
         </View>
         <View style={styles.wrapper}>
@@ -129,9 +146,15 @@ export default function StationCard({ station }: { station: object }) {
           </View>
         </View>
         <View>
-            <Text/>
-          <Accordion title="Opening Times" details={"Hello from Opening Times"}></Accordion>
-          <AccordionFacilities title="Facilities" details={"Hello from Facilities"}></AccordionFacilities>
+          <Text />
+          <Accordion
+            title="Opening Times"
+            details={"Hello from Opening Times"}
+          ></Accordion>
+          <AccordionFacilities
+            title="Facilities"
+            details={"Hello from Facilities"}
+          ></AccordionFacilities>
         </View>
       </View>
     );
@@ -144,15 +167,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     top: -25,
   },
-  main:{
- 
-    },
+  main: {},
 
   wrapper: {
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#1E998D",
-    borderRadius:10,
+    borderRadius: 10,
     padding: 0,
   },
   table: {
@@ -164,7 +185,7 @@ const styles = StyleSheet.create({
   table_caption: {
     color: "#fff",
     fontWeight: "bold",
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   table_body: {
     flexDirection: "row",
@@ -172,6 +193,6 @@ const styles = StyleSheet.create({
   table_data: {
     color: "#fff",
     padding: 3,
-    paddingLeft: 5
+    paddingLeft: 5,
   },
 });
