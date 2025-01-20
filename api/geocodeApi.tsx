@@ -9,16 +9,18 @@ const api = axios.create({
 
 //gets the coordinates from the location - town/city
 const getCoords = async (params) => {
-
+    console.log(params, '<<<params in geocodeApi')
       const { data } = await api.get('' , {
         params: {
             ...params, //address or place_id
             key: GOOGLE_API_KEY
         }
+
+        
     });
    
     //apiErrors(api)
-    
+
     if(data.status !== 'OK'){
         throw new Error(`API Error: ${data.error_message || data.status}`)
     }

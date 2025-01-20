@@ -15,7 +15,7 @@ import {
   import React, { useState, useEffect } from "react"
   import * as Location from "expo-location" //for the users location and permission
   import { validateLocation } from "../utils/locationValidation" //validates the typed location
-  import { checkConnection } from "../utils/networkValidation" //validates user network
+  // import { checkConnection } from "../utils/networkValidation" //validates user network
   import debounce from "lodash/debounce"
   import axios from "axios"
   import { Image } from 'expo-image'
@@ -38,6 +38,8 @@ import {
 
     const sendToApi = async (query) => {
       let params;
+
+      //There is a problem with expo-network package so this is commented out for now
       // const isConnected = await checkConnection()
       // if (!isConnected) {
       //   alert("No internet connection. Check your connection and try again")
@@ -50,8 +52,7 @@ import {
         console.error(error)
         return
       }
-      params = {address: query}; //for the lcoation typed by the user  
-        
+        params = {address: query}; //for the location typed by the user    
       } else if (query.place_id) {
         params={place_id: query.place_id } //for the location selected from the suggestions
       } else{
@@ -59,13 +60,14 @@ import {
       }
   
       try {
-         const result = await getCoords(params)
-         setResponse(result)
-         console.log('Coordinates in sendToApi:', result);
-         setTypedLocation('')
+        const result = await getCoords(params)
+          console.log('Coordinates in sendToApi:', result);
+        setResponse(result)
+        setTypedLocation('')
         return result;
       } catch (error) {
         console.error('Error fetching coordinates:', error);
+        return null;
       }
     }
   
@@ -114,8 +116,6 @@ import {
       const endpoint = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&components=country:GB&key=${apiKey}` //this endpoint is correct
       //const endpoint = `http://localhost:3001/api/autocomplete?input=${input}`;  ---This should work when running a server but there is a problem
   
-      //retrieves the predicted locations and the maps them
-      //and stores them in the state variable(setSuggestions)
       try {
         const response = await axios.get(endpoint)
         const predictions = response.data.predictions
@@ -138,11 +138,10 @@ import {
   
     //code for location autocomplete
     const debouncedFetchSuggestions = debounce(fetchSuggestions, 300) 
-    //gets the debounced suggestions when the user types the location - moved to context
+
     const handleInputChange = (text: any) => {
-      //problem in here
       setTypedLocation(text)
-      console.log(text, '<<<text in handleInputChange')
+        console.log(text, '<<<text in handleInputChange')
       debouncedFetchSuggestions(text)
     }
   
@@ -152,23 +151,28 @@ import {
       try {
       // Fetch lat and long using the place_id
       const coords = await sendToApi({place_id});
-      console.log("Coordinates for selected place:", coords);
-      setTypedLocation('')
-      setSuggestions([])
+
+        console.log("Raw Coordinates for selected place:", coords);//***debugging***
+
+        if (coords && typeof coords.lat === 'number' && typeof coords.lng === 'number') {
+          const newLocation = {
+            latitude: coords.lat,
+            longitude: coords.lng
+          };
+          console.log('set new location:', newLocation)
+          setLocation(newLocation)
+        } else {
+          console.log('Invalid coordinates recieved:', coords)
+        }
+        setTypedLocation('')
+        setSuggestions([])
       } catch (error) {
         console.error("Error fetching coordinates:", error);
-      }
-
-      //console.log(item, '<<<suggestion inside handleSuggestionSelect')
-      // console.log(description, '<<<suggestion in handleSuggestionSelect')
-      // console.log("Suggestions length:", suggestions.length);
-      // console.log("Suggestions:", suggestions);
-      // sendToApi(suggestion)***not needed
-      
+      }     
     }
   
     //this is to create a dropdown window for the suggestions
-    const suggestionsBox = Dimensions.get("window").height //Dimensions comes from react-native
+    const suggestionsBox = Dimensions.get("window").height 
   
     return (
 
@@ -179,7 +183,16 @@ import {
             placeholder="Enter a location"
             value={typedLocation}
             onChangeText={handleInputChange}
-            onSubmitEditing={() => sendToApi(typedLocation)}
+            onSubmitEditing={async () => {
+              const coords = await sendToApi(typedLocation);
+              if(coords && typeof coords.lat === 'number' && typeof coords.lng === 'number'){
+                setLocation({
+                  latitude: coords.lat,
+                  longitude: coords.lng,
+                })
+                setSuggestions([])
+              }
+            }}
             returnKeyType="done"
           />       
           {suggestions.length > 0 && (    
