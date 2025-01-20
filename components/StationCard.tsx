@@ -18,15 +18,14 @@ interface Station {
 
 export default function StationCard({ station }: { station: Station }) {
 
-  const formatPrice = (price: number | undefined) => {
-    if (!price && price === 0) return "Unavailable";
-    return parseFloat(price);
-  };
 
-  station.priceE5 = formatPrice(station.priceE5);
-  station.priceE10 = formatPrice(station.priceE10);
-  station.priceB7 = formatPrice(station.priceB7);
-  station.priceSDV = formatPrice(station.priceSDV);
+  if (!station.priceE5 || station.priceE5 === 0) {
+    station.priceE5 = "Unavailable"
+  }
+
+  if (!station.priceSDV || station.priceSDV === 0) {
+    station.priceSDV = "Unavailable"
+  }
 
 
   if (Object.keys(station).length === 0) {
@@ -100,7 +99,7 @@ export default function StationCard({ station }: { station: Station }) {
                 <Text style={styles.table_data}>Diesel</Text>
               </View>
               <View style={{ width: "50%" }}>
-                <Text style={styles.table_data}>{station.priceB7}</Text>
+                <Text style={styles.table_data}>{parseFloat(station.priceB7).toFixed(1)}</Text>
               </View>
             </View>
             <View style={styles.table_body}>
