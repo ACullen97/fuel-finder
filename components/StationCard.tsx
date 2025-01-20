@@ -20,7 +20,7 @@ export default function StationCard({ station }: { station: Station }) {
 
   const formatPrice = (price: number | undefined) => {
     if (!price && price === 0) return "Unavailable";
-    return parseFloat(price.toFixed(1));
+    return parseFloat(price);
   };
 
   station.priceE5 = formatPrice(station.priceE5);
