@@ -19,9 +19,12 @@ import {
   import debounce from "lodash/debounce"
   import axios from "axios"
   import { Image } from 'expo-image'
+  import { useLocationContext } from "./LocationContext";
 
   
   const LocationSearch = () => { 
+
+    const { setLocation } = useLocationContext();
 
     const [typedLocation, setTypedLocation] = useState("") //location that the user types in
     const [response, setResponse] = useState<any>(null) //fir the api response
@@ -78,10 +81,11 @@ import {
   
       let currentLocation = await Location.getCurrentPositionAsync({})
       setCurrentLocation(currentLocation)
-      let lat = currentLocation.coords.latitude
-      let long = currentLocation.coords.longitude
-      setLatitude(lat)
-      setLongitude(long)
+      let latitude = currentLocation.coords.latitude
+      let longitude = currentLocation.coords.longitude
+      setLatitude(latitude)
+      setLongitude(longitude)
+      setLocation({latitude, longitude})
       console.log(
         "Location: " +
           JSON.stringify(currentLocation) +
