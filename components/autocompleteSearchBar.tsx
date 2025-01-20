@@ -27,20 +27,18 @@ import {
     const { setLocation } = useLocationContext();
 
     const [typedLocation, setTypedLocation] = useState("") //location that the user types in
-    const [response, setResponse] = useState<any>(null) //fir the api response
+    const [response, setResponse] = useState<any>(null) 
     const [currentLocation, setCurrentLocation] =
-      useState<Location.LocationObject | null>(null) //must location object
+      useState<Location.LocationObject | null>(null) 
     const [latitude, setLatitude] = useState<number>()
     const [longitude, setLongitude] = useState<number>()
     const [placeId, setPlaceId] = useState<any>(null)
     const [suggestions, setSuggestions] = useState<string[]>([])
   
 
-    //sends users typed location and triggers getCoords, which gets the coordinates from google api - moved to location context
     const sendToApi = async (query) => {
       let params;
       // const isConnected = await checkConnection()
-  
       // if (!isConnected) {
       //   alert("No internet connection. Check your connection and try again")
       //   return
@@ -55,7 +53,7 @@ import {
       params = {address: query}; //for the lcoation typed by the user  
         
       } else if (query.place_id) {
-        params={place_id: query.place_id } //for the location selected from teh suggestions
+        params={place_id: query.place_id } //for the location selected from the suggestions
       } else{
         throw new Error('Invalid query: Must be a string or object')
       }
@@ -71,7 +69,6 @@ import {
       }
     }
   
-    //gets the users current location  - moved to location context
     const getLocationPermission = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync()
       if (status !== "granted") {
@@ -102,19 +99,19 @@ import {
           //  getLocationPermission()
           // },[]);
   
-    //gets the suggestions from google api - moved to location context
     const fetchSuggestions = async (input: any) => {
-      console.log(input, "<<<input in fetch suggestions") //debug******
+      console.log(input, "<<<input in fetch suggestions")
   
       if (!input.trim()) {
-        console.log("empty input") //debug*****
+        console.log("empty input") 
         setSuggestions([])
         return
       }
   
-      const apiKey = process.env.GOOGLE_API_KEY;
+      const apiKey = 'AIzaSyBU7GTmJQR1xJO4fbz08ew1AJ1HBa1brG4';
       const proxy = "https://cors-anywhere.herokuapp.com/" //temp proxy for CORS errors
-      const endpoint = `${proxy}https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&components=country:GB&key=${apiKey}` //this endpoint is correct
+      //const endpoint = `${proxy}https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&components=country:GB&key=${apiKey}` //this endpoint is correct
+      const endpoint = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&components=country:GB&key=${apiKey}` //this endpoint is correct
       //const endpoint = `http://localhost:3001/api/autocomplete?input=${input}`;  ---This should work when running a server but there is a problem
   
       //retrieves the predicted locations and the maps them
@@ -125,25 +122,22 @@ import {
   
         if (response.data.status === "OK") {
   
-          console.log("Results inside fetchSuggetions:", response.data.predictions) //debug******
+          console.log("Results inside fetchSuggetions:", response.data.predictions) 
           setSuggestions(predictions.map((p) => ({ description: p.description, place_id: p.place_id })));
          
           
         } else {
-          console.log("Error Status:", response.data.status)//debug*****
+          console.log("Error Status:", response.data.status)
         }
         //console.log(predictions)
-        console.log("Full prediction object:", predictions[0])// debug*****
+        console.log("Full prediction object:", predictions[0])
       } catch (error) {
         console.error("Error fetching autocomplete suggestions:", error)
       }
     }
   
-  
-  
     //code for location autocomplete
-    const debouncedFetchSuggestions = debounce(fetchSuggestions, 300) //prevenst the api being called after each keypress- gives it a delay
-  
+    const debouncedFetchSuggestions = debounce(fetchSuggestions, 300) 
     //gets the debounced suggestions when the user types the location - moved to context
     const handleInputChange = (text: any) => {
       //problem in here
@@ -152,7 +146,6 @@ import {
       debouncedFetchSuggestions(text)
     }
   
-    //this allows the user to select from the suggestions dropdown container - moved to context
     const handleSuggestionSelect = async ({ description, place_id }) => {
       console.log("Selected place:", description, "Place ID:", place_id);
   
@@ -165,17 +158,11 @@ import {
       } catch (error) {
         console.error("Error fetching coordinates:", error);
       }
-  
-  
-  
+
       //console.log(item, '<<<suggestion inside handleSuggestionSelect')
-      
-      
-      
-      console.log(description, '<<<suggestion in handleSuggestionSelect')
-      console.log("Suggestions length:", suggestions.length);
-      console.log("Suggestions:", suggestions);
-   
+      // console.log(description, '<<<suggestion in handleSuggestionSelect')
+      // console.log("Suggestions length:", suggestions.length);
+      // console.log("Suggestions:", suggestions);
       // sendToApi(suggestion)***not needed
       
     }
