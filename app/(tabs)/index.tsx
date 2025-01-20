@@ -1,15 +1,18 @@
 
 import { Image, View, StyleSheet, Platform } from "react-native"
+import { LocationProvider } from "../../components/LocationContext"; // your file path here
 import Map from "@/components/Map"
 import Header from "../../components/Header"
 
 
 export default function HomeScreen() {
   return (
+    <LocationProvider>
       <View style={styles.container}>
         <Header title="" />
         <Map />
       </View>
+    </LocationProvider>
   )
 
 }

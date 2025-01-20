@@ -6,8 +6,18 @@ import StationCard from "./StationCard"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet"
 import { getPricesRadius } from "@/api/fetchFuelPrices"
+import { useLocationContext } from "./LocationContext";
 
 export default function Map() {
+
+  const { location } = useLocationContext();
+  const [region, setRegion] = useState({
+    latitude: 51.5072,
+    longitude: 0.1276,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421
+  });
+
   const [selectedStation, setSelectedStation] = useState({})
   const [petrolStations, setPetrolStations] = useState<any[]>([])
 
@@ -22,17 +32,10 @@ export default function Map() {
   const handleOpenPress = () => bottomSheetRef.current?.collapse()
   const handleClosePress = () => bottomSheetRef.current?.close()
 
-  const initialRegion = {
-    latitude: 51.5072,
-    longitude: 0.1276,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  }
-
   useEffect(() => {
     const radius = 10
 
-    getPricesRadius(initialRegion.latitude, initialRegion.longitude, radius)
+    getPricesRadius(region.latitude, region.longitude, radius)
       .then((stationsFromApi) => {
         const transformedStations = stationsFromApi.map((station: any) => ({
           id: station.site_id,
@@ -54,6 +57,38 @@ export default function Map() {
       })
   }, [])
 
+  useEffect(() => {
+    const radius = 10
+    if (location) {
+      setRegion((prev) => ({
+        ...prev,
+        latitude: location.latitude,
+        longitude: location.longitude
+      }));
+      getPricesRadius(location.latitude, location.longitude, radius)
+      .then((stationsFromApi) => {
+        const transformedStations = stationsFromApi.map((station: any) => ({
+          id: station.site_id,
+          name: station.brand,
+          latitude: station.latitude,
+          longitude: station.longitude,
+          priceE10: (station.E10) *100, 
+          priceE5: (station.E5) *100,
+          priceB7: (station.B7) *100,
+          priceSDV: (station.SDV) *100,
+          address: station.address,
+
+        }))
+        setPetrolStations(transformedStations)
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.warn("Failed to fetch stations:", err)
+      })
+    }
+  }, [location]);
+
+
   if (loading) {
     return <Text>Loading...</Text>;
   }
@@ -64,7 +99,7 @@ export default function Map() {
         <MapView
           onPress={handleClosePress}
           style={styles.map}
-          initialRegion={initialRegion}
+          region={region}
         >
           {petrolStations.map((petrolStation) => (
             <Marker
