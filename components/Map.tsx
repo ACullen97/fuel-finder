@@ -125,7 +125,7 @@ export default function Map() {
                 }}
               >
                 <Text style={styles.whiteText}>
-                  {petrolStation.priceE10}
+                  {parseFloat(petrolStation.priceE10).toFixed(1)}
                 </Text>
               </View>
             </Marker>
