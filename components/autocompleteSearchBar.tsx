@@ -61,7 +61,7 @@ import {
   
       try {
         const result = await getCoords(params)
-          console.log('Coordinates in sendToApi:', result);
+          //console.log('Coordinates in sendToApi:', result);
         setResponse(result)
         setTypedLocation('')
         return result;
@@ -85,14 +85,14 @@ import {
       setLatitude(latitude)
       setLongitude(longitude)
       setLocation({latitude, longitude})
-      console.log(
-        "Location: " +
-          JSON.stringify(currentLocation) +
-          " Latitude: " +
-          currentLocation.coords.latitude +
-          "Longitude: " +
-          currentLocation.coords.longitude
-      )
+      // console.log(
+      //   "Location: " +
+      //     JSON.stringify(currentLocation) +
+      //     " Latitude: " +
+      //     currentLocation.coords.latitude +
+      //     "Longitude: " +
+      //     currentLocation.coords.longitude
+      // )
     }
           //The code below will get the users current location automatically when component is loaded
           // if we want to use it we can just uncomment this code(don't need to add anything else as it works!)
@@ -102,10 +102,10 @@ import {
           // },[]);
   
     const fetchSuggestions = async (input: any) => {
-      console.log(input, "<<<input in fetch suggestions")
+      //console.log(input, "<<<input in fetch suggestions")
   
       if (!input.trim()) {
-        console.log("empty input") 
+        //console.log("empty input") 
         setSuggestions([])
         return
       }
@@ -122,7 +122,7 @@ import {
   
         if (response.data.status === "OK") {
   
-          console.log("Results inside fetchSuggetions:", response.data.predictions) 
+          //console.log("Results inside fetchSuggetions:", response.data.predictions) 
           setSuggestions(predictions.map((p) => ({ description: p.description, place_id: p.place_id })));
          
           
@@ -130,7 +130,7 @@ import {
           console.log("Error Status:", response.data.status)
         }
         //console.log(predictions)
-        console.log("Full prediction object:", predictions[0])
+        //console.log("Full prediction object:", predictions[0])
       } catch (error) {
         console.error("Error fetching autocomplete suggestions:", error)
       }
@@ -141,25 +141,25 @@ import {
 
     const handleInputChange = (text: any) => {
       setTypedLocation(text)
-        console.log(text, '<<<text in handleInputChange')
+       // console.log(text, '<<<text in handleInputChange')
       debouncedFetchSuggestions(text)
     }
   
     const handleSuggestionSelect = async ({ description, place_id }) => {
-      console.log("Selected place:", description, "Place ID:", place_id);
+     // console.log("Selected place:", description, "Place ID:", place_id);
   
       try {
       // Fetch lat and long using the place_id
       const coords = await sendToApi({place_id});
 
-        console.log("Raw Coordinates for selected place:", coords);//***debugging***
+       // console.log("Raw Coordinates for selected place:", coords);//***debugging***
 
         if (coords && typeof coords.lat === 'number' && typeof coords.lng === 'number') {
           const newLocation = {
             latitude: coords.lat,
             longitude: coords.lng
           };
-          console.log('set new location:', newLocation)
+        //  console.log('set new location:', newLocation)
           setLocation(newLocation)
         } else {
           console.log('Invalid coordinates recieved:', coords)
