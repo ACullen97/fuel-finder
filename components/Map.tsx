@@ -113,6 +113,38 @@ export default function Map() {
       });
   }, [region]);
 
+  const handleRegionChange = async (newRegion) => {
+    setRegion(newRegion);
+    const radius = 10;
+    try {
+      const stationsFromApi = await getPricesRadius(newRegion.latitude, newRegion.longitude, radius)
+      //map component causes an issue, so used js map constructor
+      const uniqueStations = Array.from(
+        new globalThis.Map(
+           stationsFromApi.map((station) => [station.site_id, station])
+          ). values()
+        );
+      
+      const transformedStations= uniqueStations.map((station: any) => ({
+        id:`${station.site_id}-${station.latitude}-${station.longitude}`, //because there was an issue with duplicate ids!!
+        name: station.brand,
+        latitude: station.latitude,
+        longitude: station.longitude,
+        priceE10: (station.E10) *100, 
+        priceE5: (station.E5) *100,
+        priceB7: (station.B7) *100,
+        priceSDV: (station.SDV) *100,
+        address: station.address,
+
+      }))
+      setPetrolStations(transformedStations);
+    } catch (error) {
+      console.warn("Failed to fetch stations", error)
+    }
+  }
+  
+
+
   if (loading) {
     return <Text>Loading...</Text>;
   }
@@ -124,8 +156,10 @@ export default function Map() {
           onPress={handleClosePress}
           style={styles.map}
           region={region}
+
           onRegionChangeComplete={(newRegion) => {
             setRegion(newRegion);
+            handleRegionChange(newRegion);
           }}
         >
           {petrolStations.map((petrolStation) => (
