@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
 import MapView, { Marker } from "react-native-maps"
 import PetrolStations from "@/assets/data/PetrolStation.json"
 import React, { useState, useCallback, useMemo, useRef, useEffect } from "react"
@@ -88,6 +88,30 @@ export default function Map() {
     }
   }, [location]);
 
+  // Handler for the "Search this area" button
+  const handleSearchThisArea = useCallback(() => {
+    const radius = 10
+    getPricesRadius(region.latitude, region.longitude, radius)
+      .then((stationsFromApi) => {
+        const transformedStations = stationsFromApi.map((station: any) => ({
+          id: station.site_id,
+          name: station.brand,
+          latitude: station.latitude,
+          longitude: station.longitude,
+          priceE10: (station.E10) *100, 
+          priceE5: (station.E5) *100,
+          priceB7: (station.B7) *100,
+          priceSDV: (station.SDV) *100,
+          address: station.address,
+
+        }))
+        setPetrolStations(transformedStations)
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.warn("Failed to fetch stations:", err)
+      });
+  }, [region]);
 
   if (loading) {
     return <Text>Loading...</Text>;
@@ -100,6 +124,9 @@ export default function Map() {
           onPress={handleClosePress}
           style={styles.map}
           region={region}
+          onRegionChangeComplete={(newRegion) => {
+            setRegion(newRegion);
+          }}
         >
           {petrolStations.map((petrolStation) => (
             <Marker
@@ -131,6 +158,14 @@ export default function Map() {
             </Marker>
           ))}
         </MapView>
+
+        {/* Button to search in current map region */}
+      <View style={styles.searchAreaContainer}>
+        <TouchableOpacity style={styles.searchAreaButton} onPress={handleSearchThisArea}>
+          <Text style={styles.searchAreaButtonText}>Search this area</Text>
+        </TouchableOpacity>
+      </View>
+      
         <BottomSheet
           ref={bottomSheetRef}
           onChange={handleSheetChanges}
@@ -164,5 +199,23 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 36,
     alignItems: "center",
+  },
+  searchAreaContainer: {
+    position: "absolute",
+    bottom: 100, // Adjust as needed to sit above your bottom sheet or other controls
+    left: 0,
+    right: 0,
+    alignItems: "center",
+  },
+  searchAreaButton: {
+    backgroundColor: "#1E998D",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  searchAreaButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
