@@ -6,27 +6,27 @@ import StationCard from "./StationCard"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet"
 import { getPricesRadius } from "@/api/fetchFuelPrices"
-import { useLocationContext } from "./LocationContext";
+import { useLocationContext } from "./LocationContext"
+import { getCoords } from "@/api/geocodeApi"
+import { getPlaceDetails } from "@/api/fetchPlaceDetails"
 
 export default function Map() {
-
-  const { location } = useLocationContext();
+  const { location } = useLocationContext()
   const [region, setRegion] = useState({
     latitude: 51.5072,
     longitude: 0.1276,
     latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421
-  });
+    longitudeDelta: 0.0421,
+  })
 
   const [selectedStation, setSelectedStation] = useState({})
   const [petrolStations, setPetrolStations] = useState<any[]>([])
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true)
   const bottomSheetRef = useRef<BottomSheet>(null)
   const handleSheetChanges = useCallback((index: number) => {
-    console.log("handleSheetChanges", index);
-  }, []);
-
+    console.log("handleSheetChanges", index)
+  }, [])
 
   const snapPoints = useMemo(() => ["25%", "50%", "90%"], [])
   const handleOpenPress = () => bottomSheetRef.current?.collapse()
@@ -42,15 +42,14 @@ export default function Map() {
           name: station.brand,
           latitude: station.latitude,
           longitude: station.longitude,
-          priceE10: (station.E10) *100, 
-          priceE5: (station.E5) *100,
-          priceB7: (station.B7) *100,
-          priceSDV: (station.SDV) *100,
+          priceE10: station.E10 * 100,
+          priceE5: station.E5 * 100,
+          priceB7: station.B7 * 100,
+          priceSDV: station.SDV * 100,
           address: station.address,
-
         }))
         setPetrolStations(transformedStations)
-        setLoading(false);
+        setLoading(false)
       })
       .catch((err) => {
         console.warn("Failed to fetch stations:", err)
@@ -63,50 +62,60 @@ export default function Map() {
       setRegion((prev) => ({
         ...prev,
         latitude: location.latitude,
-        longitude: location.longitude
-      }));
+        longitude: location.longitude,
+      }))
       getPricesRadius(location.latitude, location.longitude, radius)
-      .then((stationsFromApi) => {
-        const transformedStations = stationsFromApi.map((station: any) => ({
-          id: station.site_id,
-          name: station.brand,
-          latitude: station.latitude,
-          longitude: station.longitude,
-          priceE10: (station.E10) *100, 
-          priceE5: (station.E5) *100,
-          priceB7: (station.B7) *100,
-          priceSDV: (station.SDV) *100,
-          address: station.address,
-
-        }))
-        setPetrolStations(transformedStations)
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.warn("Failed to fetch stations:", err)
-      })
+        .then((stationsFromApi) => {
+          const transformedStations = stationsFromApi.map((station: any) => ({
+            id: station.site_id,
+            name: station.brand,
+            latitude: station.latitude,
+            longitude: station.longitude,
+            priceE10: station.E10 * 100,
+            priceE5: station.E5 * 100,
+            priceB7: station.B7 * 100,
+            priceSDV: station.SDV * 100,
+            address: station.address,
+          }))
+          setPetrolStations(transformedStations)
+          setLoading(false)
+        })
+        .catch((err) => {
+          console.warn("Failed to fetch stations:", err)
+        })
     }
-  }, [location]);
+  }, [location])
 
+  const handleMarkerPress = async (petrolStation) => {
+    try {
+      const query = `${petrolStation.name} ${petrolStation.address}`
+      console.log(`Query: ${query}`)
+      const { placeId } = await getCoords({ address: query })
+      console.log(`Place ID: ${placeId}`)
+      const placeDetails = await getPlaceDetails(placeId)
+      console.log(`Place Details:`, placeDetails)
+      setSelectedStation({
+        ...petrolStation,
+        placeId: placeId,
+        rating: placeDetails.rating,
+      })
+      handleOpenPress()
+    } catch (error) {
+      console.warn("Failed to fetch place details:", error)
+    }
+  }
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return <Text>Loading...</Text>
   }
 
   return (
     <>
       <GestureHandlerRootView style={styles.container}>
-        <MapView
-          onPress={handleClosePress}
-          style={styles.map}
-          region={region}
-        >
+        <MapView onPress={handleClosePress} style={styles.map} region={region}>
           {petrolStations.map((petrolStation) => (
             <Marker
-              onPress={() => {
-                setSelectedStation(petrolStation);
-                handleOpenPress();
-              }}
+              onPress={() => handleMarkerPress(petrolStation)}
               key={petrolStation.id}
               coordinate={{
                 latitude: petrolStation.latitude,
@@ -124,9 +133,7 @@ export default function Map() {
                   borderRadius: 20,
                 }}
               >
-                <Text style={styles.whiteText}>
-                  {petrolStation.priceE10}
-                </Text>
+                <Text style={styles.whiteText}>{petrolStation.priceE10}</Text>
               </View>
             </Marker>
           ))}
@@ -145,7 +152,7 @@ export default function Map() {
         </BottomSheet>
       </GestureHandlerRootView>
     </>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -165,4 +172,4 @@ const styles = StyleSheet.create({
     padding: 36,
     alignItems: "center",
   },
-});
+})
