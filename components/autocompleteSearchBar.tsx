@@ -173,6 +173,59 @@ const LocationSearch = () => {
       console.error("Error fetching coordinates:", error)
     }
   }
+  const styles = StyleSheet.create({
+    titleContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+    },
+    stepContainer: {
+      gap:5,
+      marginBottom: 8,
+    },
+    inputContainer: {
+      maxWidth: 400,
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    input: {
+      height: 40,
+      width:'90%',
+      maxWidth:300,
+      borderColor: "#cC7F5cF2",
+      borderWidth: 1,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      paddingTop:5,
+      paddingBottom: 5,
+      color: "#21130d",
+      backgroundColor: "#fff",
+      flex: 1,
+    },
+    // textInput: {
+    //   height: 40,
+    //   width: 250,
+    //   margin: 12,
+    //   borderWidth: 2,
+    //   borderColor: "lightblue",
+    //   borderRadius: 10,
+    //   padding: 5,
+    //   color: "black",
+    //   backgroundColor: "white",
+    // },
+    suggestionsContainer: {
+      position: "relative", // Align with parent
+      zIndex: 2, // Ensure it appears above other elements
+      maxHeight: 200, // Prevent overflow
+      backgroundColor: "#fff",
+      borderWidth: 1,
+      borderColor: "black",
+      borderRadius: 8,
+      padding: 10,
+      borderBottomWidth: 1,
+      color: 'black',
+    },
+  })
 
   //this is to create a dropdown window for the suggestions
   const suggestionsBox = Dimensions.get("window").height
