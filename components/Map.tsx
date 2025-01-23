@@ -98,7 +98,8 @@ export default function Map() {
         ...petrolStation,
         placeId: placeId,
         rating: placeDetails.rating,
-        openingHours: placeDetails.opening_hours?.weekday_text || [], // Add opening hours
+        openingHours: placeDetails.opening_hours?.weekday_text || [],
+        openNow: placeDetails.opening_hours?.open_now,
       })
       handleOpenPress()
     } catch (error) {

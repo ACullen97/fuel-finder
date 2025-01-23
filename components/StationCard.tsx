@@ -18,6 +18,7 @@ interface Station {
   rating?: number
   placeId?: string
   openingHours?: string[]
+  openNow?: boolean
 }
 
 export default function StationCard({ station }: { station: Station }) {
@@ -40,11 +41,16 @@ export default function StationCard({ station }: { station: Station }) {
             Address:{station.address}
           </Text>
           <Text style={{ color: "#fff", fontSize: 14, top: 10 }}>
-            Status:{station.id}
+            Status:
+            {station.openNow !== undefined
+              ? station.openNow
+                ? "Open"
+                : "Closed"
+              : "Status not available"}
           </Text>
-          <Text style={{ color: "#fff", fontSize: 14, top: 10 }}>
+          {/* <Text style={{ color: "#fff", fontSize: 14, top: 10 }}>
             Place ID:{station.placeId}
-          </Text>
+          </Text> */}
           <Text style={{ color: "#fff", fontSize: 14, top: 15 }}>
             Overall Rating:
             {station.rating ? station.rating : "No rating available"}
