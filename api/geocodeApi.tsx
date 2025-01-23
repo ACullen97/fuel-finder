@@ -31,4 +31,25 @@ const getCoords = async (params) => {
   return { location, placeId }
 }
 
-export { getCoords }
+// Searches for gas stations near the given coordinates
+const searchGasStations = async (location) => {
+  const { data } = await placesApi.get("", {
+    params: {
+      location: `${location.latitude},${location.longitude}`,
+      radius: 50, // Search within a 50m radius
+      type: "gas_station",
+      key: GOOGLE_API_KEY,
+    },
+  })
+
+  if (data.status !== "OK") {
+    throw new Error(`API Error: ${data.error_message || data.status}`)
+  }
+  if (!data.results || data.results.length === 0) {
+    throw new Error("No gas stations found")
+  }
+  console.log(data.results, "<<<data.results in searchGasStations")
+  return data.results
+}
+
+export { getCoords, searchGasStations }

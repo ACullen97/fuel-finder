@@ -7,7 +7,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler"
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet"
 import { getPricesRadius } from "@/api/fetchFuelPrices"
 import { useLocationContext } from "./LocationContext"
-import { getCoords } from "@/api/geocodeApi"
+import { getCoords, searchGasStations } from "@/api/geocodeApi"
 import { getPlaceDetails } from "@/api/fetchPlaceDetails"
 
 export default function Map() {
@@ -88,7 +88,7 @@ export default function Map() {
 
   const handleMarkerPress = async (petrolStation) => {
     try {
-      const query = `${petrolStation.name} ${petrolStation.address}`
+      const query = `${petrolStation.name} Petrol Station ${petrolStation.address}`
       console.log(`Query: ${query}`)
       const { placeId } = await getCoords({ address: query })
       console.log(`Place ID: ${placeId}`)
@@ -98,6 +98,7 @@ export default function Map() {
         ...petrolStation,
         placeId: placeId,
         rating: placeDetails.rating,
+        openingHours: placeDetails.opening_hours?.weekday_text || [], // Add opening hours
       })
       handleOpenPress()
     } catch (error) {

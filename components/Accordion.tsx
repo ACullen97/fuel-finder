@@ -4,167 +4,88 @@ import {
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
-} from "react-native";
-import { ListItem } from "@rneui/themed";
-import React, { useState } from "react";
-import { AntDesign } from "@expo/vector-icons";
+} from "react-native"
+import { ListItem } from "@rneui/themed"
+import React, { useState } from "react"
+import { AntDesign } from "@expo/vector-icons"
 
-export default function Accordion({
-  title,
-  details,
-}: {
-  title: string;
-  details: string;
-}) {
-  const [opened, setOpened] = useState(false);
-  const [animation] = useState(new Animated.Value(0));
-  const heightAnimationInterpolation = animation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 180],
-  });
+const Accordion = ({ title, details }) => {
+  const [expanded, setExpanded] = useState(false)
+  const [animation] = useState(new Animated.Value(0))
+  const [contentHeight, setContentHeight] = useState(0)
 
-  function toggleAccordion() {
-    if (!opened) {
-      Animated.timing(animation, {
-        toValue: 1,
-        duration: 100,
-        useNativeDriver: false,
-      }).start();
-    } else {
-      Animated.timing(animation, {
-        toValue: 0,
-        duration: 100,
-        useNativeDriver: false,
-      }).start();
-    }
-    setOpened(!opened);
+  const toggleAccordion = () => {
+    const initialValue = expanded ? 1 : 0
+    const finalValue = expanded ? 0 : 1
+
+    setExpanded(!expanded)
+    Animated.timing(animation, {
+      toValue: finalValue,
+      duration: 300,
+      useNativeDriver: false,
+    }).start()
   }
 
+  const setMaxHeight = (event) => {
+    if (contentHeight === 0) {
+      setContentHeight(event.nativeEvent.layout.height)
+    }
+  }
+
+  const heightAnimationInterpolation = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 100], // Adjust this value based on your content height
+  })
+
   return (
-    <View style={styles.container}>
+    <View>
       <TouchableWithoutFeedback onPress={toggleAccordion}>
         <View style={styles.header}>
-          <Text style={styles.title}>{title}</Text>
-          <AntDesign
-            style={{ color: "white" }}
-            name={opened ? "caretright" : "caretdown"}
-            size={16}
-          />
+          <Text style={styles.headerText}>{title}</Text>
         </View>
       </TouchableWithoutFeedback>
       <Animated.View
         style={[styles.content, { height: heightAnimationInterpolation }]}
-      >         <View style={styles.wrapper}>
-                  {/* {Table Container} */}
-                  <View style={styles.table}>
-                    {/* {Table Head} */}
-                    <View style={styles.table_head}>
-                      {/* {Single Row} */}
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_caption}>Day</Text>
-                      </View>
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_caption}>Time</Text>
-                      </View>
-                    </View>
-                    {/* {Table Body} */}
-                    <View style={styles.table_body}>
-                      {/* {Single Row} */}
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_data}>Monday</Text>
-                      </View>
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_data}>24 hours</Text>
-                      </View>
-                    </View>
-                    <View style={styles.table_body}>
-                      {/* {Single Row} */}
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_data}>Tuesday</Text>
-                      </View>
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_data}>24 hours</Text>
-                      </View>
-                    </View>
-                    <View style={styles.table_body}>
-                      {/* {Single Row} */}
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_data}>Wednesday</Text>
-                      </View>
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_data}>24 hours</Text>
-                      </View>
-                    </View>
-                    <View style={styles.table_body}>
-                      {/* {Single Row} */}
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_data}>Thursday</Text>
-                      </View>
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_data}>24 hours</Text>
-                      </View>
-                    </View>
-                    <View style={styles.table_body}>
-                      {/* {Single Row} */}
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_data}>Friday</Text>
-                      </View>
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_data}>24 hours</Text>
-                      </View>
-                    </View>
-                    <View style={styles.table_body}>
-                      {/* {Single Row} */}
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_data}>Saturday</Text>
-                      </View>
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_data}>24 hours</Text>
-                      </View>
-                    </View>
-                    <View style={styles.table_body}>
-                      {/* {Single Row} */}
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_data}>Sunday</Text>
-                      </View>
-                      <View style={{ width: "50%" }}>
-                        <Text style={styles.table_data}>24 hours</Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
+      >
+        <View onLayout={setMaxHeight} style={styles.wrapper}>
+          <View style={styles.table}>
+            <View style={styles.table_head}>
+              <View style={{ width: "100%" }}>
+                <Text style={styles.table_caption}>Opening Times</Text>
+              </View>
+            </View>
+            <View style={styles.table_body}>
+              <View style={{ width: "100%" }}>
+                <Text style={styles.table_data}>{details}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
       </Animated.View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  container: {
-    margin: 10,
-    padding: 15,
     backgroundColor: "#1E998D",
-    borderRadius: 10,
+    padding: 10,
+    borderRadius: 5,
+  },
+  headerText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   content: {
-    marginTop: 8,
-  },
-  details: {
-    opacity: 0.65,
-    color: "white",
-  },
-  title: {
-    fontWeight: "bold",
-    color: "white",
+    overflow: "hidden",
   },
   wrapper: {
     justifyContent: "center",
     alignItems: "center",
-    flex: 1,
- 
+    backgroundColor: "#1E998D",
+    borderRadius: 10,
+    padding: 10,
   },
   table: {
     margin: 15,
@@ -175,12 +96,16 @@ const styles = StyleSheet.create({
   table_caption: {
     color: "#fff",
     fontWeight: "bold",
+    paddingBottom: 10,
   },
   table_body: {
     flexDirection: "row",
   },
   table_data: {
     color: "#fff",
-    padding: 3
+    padding: 3,
+    paddingLeft: 5,
   },
-});
+})
+
+export default Accordion

@@ -17,6 +17,7 @@ interface Station {
   priceSDV: number
   rating?: number
   placeId?: string
+  openingHours?: string[]
 }
 
 export default function StationCard({ station }: { station: Station }) {
@@ -129,12 +130,16 @@ export default function StationCard({ station }: { station: Station }) {
           <Text />
           <Accordion
             title="Opening Times"
-            details={"Hello from Opening Times"}
+            details={
+              station.openingHours
+                ? station.openingHours.join("\n")
+                : "No opening hours available"
+            }
           ></Accordion>
-          <AccordionFacilities
+          {/* <AccordionFacilities
             title="Facilities"
             details={"Hello from Facilities"}
-          ></AccordionFacilities>
+          ></AccordionFacilities> */}
         </View>
       </View>
     )
