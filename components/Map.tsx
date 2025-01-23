@@ -193,6 +193,7 @@ export default function Map() {
           ref={bottomSheetRef}
           onChange={handleSheetChanges}
           snapPoints={snapPoints}
+          index={-1}
           enablePanDownToClose={true}
           backgroundStyle={{ backgroundColor: "#005051" }}
           handleIndicatorStyle={{ backgroundColor: "#C7F5F2" }}
