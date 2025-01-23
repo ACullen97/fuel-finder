@@ -240,6 +240,7 @@ import {
       marginBottom: 8,
     },
     inputContainer: {
+      maxWidth: 400,
       flexDirection: "row",
       alignItems: "center",
     },

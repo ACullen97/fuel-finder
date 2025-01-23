@@ -9,7 +9,7 @@ export default function HomeScreen() {
   return (
     <LocationProvider>
       <View style={styles.container}>
-        <Header title="" />
+        <Header title="Map of Stations" />
         <Map />
       </View>
     </LocationProvider>

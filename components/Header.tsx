@@ -22,16 +22,17 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
 const styles = StyleSheet.create({
   header: {
     width: "100%",
-    height: 110,
+    height: 180,
     backgroundColor: "#005051",
     justifyContent: "center",
     alignItems: "center",
-    paddingTop: 20,
+    paddingTop: 50,
     paddingHorizontal: 30,
   },
   headerText: {
     color: "#C7F5F2",
     fontSize: 20,
+    paddingBottom:10,
     fontWeight: "bold",
   },
   inputContainer: {
@@ -48,6 +49,7 @@ const styles = StyleSheet.create({
     color: "#21130d",
     backgroundColor: "#fff",
     flex: 1,
+    zIndex: 100,
   },
 })
 
