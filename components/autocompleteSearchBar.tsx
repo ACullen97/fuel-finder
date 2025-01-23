@@ -49,121 +49,118 @@ const LocationSearch = () => {
         console.error(error)
         return
       }
-      params = { address: query } //for the location typed by the user
-    } else if (query.place_id) {
-      params = { place_id: query.place_id } //for the location selected from the suggestions
-    } else {
-      throw new Error("Invalid query: Must be a string or object")
-    }
 
-    try {
-      const result = await getCoords(params)
-      console.log("Coordinates in sendToApi:", result)
-      setResponse(result)
-      setTypedLocation("")
-      return result
-    } catch (error) {
-      console.error("Error fetching coordinates:", error)
-      return null
-    }
-  }
-
-  const getLocationPermission = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync()
-    if (status !== "granted") {
-      alert("permission to access location was denied")
-      return
-    }
-
-    let currentLocation = await Location.getCurrentPositionAsync({})
-    setCurrentLocation(currentLocation)
-    let latitude = currentLocation.coords.latitude
-    let longitude = currentLocation.coords.longitude
-    setLatitude(latitude)
-    setLongitude(longitude)
-    setLocation({ latitude, longitude })
-    console.log(
-      "Location: " +
-        JSON.stringify(currentLocation) +
-        " Latitude: " +
-        currentLocation.coords.latitude +
-        "Longitude: " +
-        currentLocation.coords.longitude
-    )
-  }
-  //The code below will get the users current location automatically when component is loaded
-  // if we want to use it we can just uncomment this code(don't need to add anything else as it works!)
-
-  // useEffect(() => {
-  //  getLocationPermission()
-  // },[]);
-
-  const fetchSuggestions = async (input: any) => {
-    console.log(input, "<<<input in fetch suggestions")
-
-    if (!input.trim()) {
-      console.log("empty input")
-      setSuggestions([])
-      return
-    }
-
-    const apiKey = "AIzaSyBU7GTmJQR1xJO4fbz08ew1AJ1HBa1brG4"
-    const proxy = "https://cors-anywhere.herokuapp.com/" //temp proxy for CORS errors
-    //const endpoint = `${proxy}https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&components=country:GB&key=${apiKey}` //this endpoint is correct
-    const endpoint = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&components=country:GB&key=${apiKey}` //this endpoint is correct
-    //const endpoint = `http://localhost:3001/api/autocomplete?input=${input}`;  ---This should work when running a server but there is a problem
-
-    try {
-      const response = await axios.get(endpoint)
-      const predictions = response.data.predictions
-
-      if (response.data.status === "OK") {
-        console.log(
-          "Results inside fetchSuggetions:",
-          response.data.predictions
-        )
-        setSuggestions(
-          predictions.map((p) => ({
-            description: p.description,
-            place_id: p.place_id,
-          }))
-        )
-      } else {
-        console.log("Error Status:", response.data.status)
+        params = {address: query}; //for the location typed by the user    
+      } else if (query.place_id) {
+        params={place_id: query.place_id } //for the location selected from the suggestions
+      } else{
+        throw new Error('Invalid query: Must be a string or object')
       }
-      //console.log(predictions)
-      console.log("Full prediction object:", predictions[0])
-    } catch (error) {
-      console.error("Error fetching autocomplete suggestions:", error)
+  
+      try {
+        const result = await getCoords(params)
+          //console.log('Coordinates in sendToApi:', result);
+        setResponse(result)
+        setTypedLocation('')
+        return result;
+      } catch (error) {
+        console.error('Error fetching coordinates:', error);
+        return null;
+      }
     }
-  }
+  
+    const getLocationPermission = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync()
+      if (status !== "granted") {
+        alert("permission to access location was denied")
+        return
+      }
+  
+      let currentLocation = await Location.getCurrentPositionAsync({})
+      setCurrentLocation(currentLocation)
+      let latitude = currentLocation.coords.latitude
+      let longitude = currentLocation.coords.longitude
+      setLatitude(latitude)
+      setLongitude(longitude)
+      setLocation({latitude, longitude})
+      // console.log(
+      //   "Location: " +
+      //     JSON.stringify(currentLocation) +
+      //     " Latitude: " +
+      //     currentLocation.coords.latitude +
+      //     "Longitude: " +
+      //     currentLocation.coords.longitude
+      // )
+    }
+          //The code below will get the users current location automatically when component is loaded
+          // if we want to use it we can just uncomment this code(don't need to add anything else as it works!)
+        
+          // useEffect(() => {
+          //  getLocationPermission()
+          // },[]);
+  
+    const fetchSuggestions = async (input: any) => {
+      //console.log(input, "<<<input in fetch suggestions")
+  
+      if (!input.trim()) {
+        //console.log("empty input") 
+        setSuggestions([])
+        return
+      }
+  
+      const apiKey = 'AIzaSyBU7GTmJQR1xJO4fbz08ew1AJ1HBa1brG4';
+      const proxy = "https://cors-anywhere.herokuapp.com/" //temp proxy for CORS errors
+      //const endpoint = `${proxy}https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&components=country:GB&key=${apiKey}` //this endpoint is correct
+      const endpoint = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&components=country:GB&key=${apiKey}` //this endpoint is correct
+      //const endpoint = `http://localhost:3001/api/autocomplete?input=${input}`;  ---This should work when running a server but there is a problem
+  
+      try {
+        const response = await axios.get(endpoint)
+        const predictions = response.data.predictions
+  
+        if (response.data.status === "OK") {
+  
+          //console.log("Results inside fetchSuggetions:", response.data.predictions) 
+          setSuggestions(predictions.map((p) => ({ description: p.description, place_id: p.place_id })));
+         
+          
+        } else {
+          console.log("Error Status:", response.data.status)
+        }
+        //console.log(predictions)
+        //console.log("Full prediction object:", predictions[0])
+      } catch (error) {
+        console.error("Error fetching autocomplete suggestions:", error)
+      }
+    }
 
-  //code for location autocomplete
-  const debouncedFetchSuggestions = debounce(fetchSuggestions, 300)
+    const handleInputChange = (text: any) => {
+      setTypedLocation(text)
+       // console.log(text, '<<<text in handleInputChange')
+      debouncedFetchSuggestions(text)
+    }
+  
+    const handleSuggestionSelect = async ({ description, place_id }) => {
+     // console.log("Selected place:", description, "Place ID:", place_id);
+  
+      try {
 
-  const handleInputChange = (text: any) => {
-    setTypedLocation(text)
-    console.log(text, "<<<text in handleInputChange")
-    debouncedFetchSuggestions(text)
-  }
-
-  const handleSuggestionSelect = async ({ description, place_id }) => {
-    console.log("Selected place:", description, "Place ID:", place_id)
-
-    try {
       // Fetch lat and long using the place_id
       const coords = await sendToApi({ place_id })
 
-      console.log("Raw Coordinates for selected place:", coords) //***debugging***
 
-      if (
-        coords &&
-        typeof coords.lat === "number" &&
-        typeof coords.lng === "number"
-      ) {
-        const newLocation = {
-          latitude: coords.lat,
-          longitude: coords.lng,
+       // console.log("Raw Coordinates for selected place:", coords);//***debugging***
+
+        if (coords && typeof coords.lat === 'number' && typeof coords.lng === 'number') {
+          const newLocation = {
+            latitude: coords.lat,
+            longitude: coords.lng
+          };
+        //  console.log('set new location:', newLocation)
+          setLocation(newLocation)
+        } else {
+          console.log('Invalid coordinates recieved:', coords)
+
         }
         console.log("set new location:", newLocation)
         setLocation(newLocation)

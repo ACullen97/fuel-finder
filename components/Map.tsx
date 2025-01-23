@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
 import MapView, { Marker } from "react-native-maps"
 import PetrolStations from "@/assets/data/PetrolStation.json"
 import React, { useState, useCallback, useMemo, useRef, useEffect } from "react"
@@ -22,7 +22,11 @@ export default function Map() {
   const [selectedStation, setSelectedStation] = useState({})
   const [petrolStations, setPetrolStations] = useState<any[]>([])
 
-  const [loading, setLoading] = useState(true)
+
+  const [loading, setLoading] = useState(true);
+
+  const [selectedFuelType, setSelectedFuelType] = useState<"E10" | "E5" | "B7" | "SDV">("E10");
+
   const bottomSheetRef = useRef<BottomSheet>(null)
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index)
@@ -105,7 +109,32 @@ export default function Map() {
     } catch (error) {
       console.warn("Failed to fetch place details:", error)
     }
-  }
+  }, [location]);
+
+  // Handler for the "Search this area" button
+  const handleSearchThisArea = useCallback(() => {
+    const radius = 10
+    getPricesRadius(region.latitude, region.longitude, radius)
+      .then((stationsFromApi) => {
+        const transformedStations = stationsFromApi.map((station: any) => ({
+          id: station.site_id,
+          name: station.brand,
+          latitude: station.latitude,
+          longitude: station.longitude,
+          priceE10: (station.E10) *100, 
+          priceE5: (station.E5) *100,
+          priceB7: (station.B7) *100,
+          priceSDV: (station.SDV) *100,
+          address: station.address,
+
+        }))
+        setPetrolStations(transformedStations)
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.warn("Failed to fetch stations:", err)
+      });
+  }, [region]);
 
   if (loading) {
     return <Text>Loading...</Text>
@@ -114,8 +143,36 @@ export default function Map() {
   return (
     <>
       <GestureHandlerRootView style={styles.container}>
-        <MapView onPress={handleClosePress} style={styles.map} region={region}>
-          {petrolStations.map((petrolStation) => (
+
+        <View style={styles.toggleContainer}>
+          {(["E10", "E5", "B7", "SDV"] as const).map((fuel) => {
+            const isActive = selectedFuelType === fuel;
+            return (
+              <TouchableOpacity
+                key={fuel}
+                onPress={() => setSelectedFuelType(fuel)}
+                style={[
+                  styles.toggleButton,
+                  isActive && styles.activeToggleButton
+                ]}
+              >
+                <Text style={styles.toggleButtonText}>{fuel}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+        <MapView
+          onPress={handleClosePress}
+          style={styles.map}
+          region={region}
+          onRegionChangeComplete={(newRegion) => {
+            setRegion(newRegion);
+          }}
+        >
+          {petrolStations.map((petrolStation) => {
+             const markerPrice = petrolStation[`price${selectedFuelType}`];
+             return(
+            
             <Marker
               onPress={() => handleMarkerPress(petrolStation)}
               key={petrolStation.id}
@@ -135,15 +192,27 @@ export default function Map() {
                   borderRadius: 20,
                 }}
               >
-                <Text style={styles.whiteText}>{petrolStation.priceE10}</Text>
+                <Text style={styles.whiteText}>
+                {parseFloat(markerPrice).toFixed(1)}
+                </Text>
+
               </View>
             </Marker>
-          ))}
+          )})}
         </MapView>
+
+        {/* Button to search in current map region */}
+      <View style={styles.searchAreaContainer}>
+        <TouchableOpacity style={styles.searchAreaButton} onPress={handleSearchThisArea}>
+          <Text style={styles.searchAreaButtonText}>Search this area</Text>
+        </TouchableOpacity>
+      </View>
+      
         <BottomSheet
           ref={bottomSheetRef}
           onChange={handleSheetChanges}
           snapPoints={snapPoints}
+          index={-1}
           enablePanDownToClose={true}
           backgroundStyle={{ backgroundColor: "#005051" }}
           handleIndicatorStyle={{ backgroundColor: "#C7F5F2" }}
@@ -165,6 +234,27 @@ const styles = StyleSheet.create({
   whiteText: {
     color: "white",
   },
+  toggleContainer: {
+    position: "absolute",
+    top: 40,    // Adjust as needed
+    left: 10,   // Adjust as needed
+    flexDirection: "row",
+    zIndex: 999,
+  },
+  toggleButton: {
+    backgroundColor: "#ccc",
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 5,
+    marginRight: 5,
+  },
+  activeToggleButton: {
+    backgroundColor: "#1E998D",
+  },
+  toggleButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
   container: {
     flex: 1,
     backgroundColor: "grey",
@@ -174,4 +264,24 @@ const styles = StyleSheet.create({
     padding: 36,
     alignItems: "center",
   },
-})
+
+  searchAreaContainer: {
+    position: "absolute",
+    bottom: 100, // Adjust as needed to sit above your bottom sheet or other controls
+    left: 0,
+    right: 0,
+    alignItems: "center",
+  },
+  searchAreaButton: {
+    backgroundColor: "#1E998D",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  searchAreaButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+});
+
