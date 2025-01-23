@@ -22,6 +22,9 @@ export default function Map() {
   const [petrolStations, setPetrolStations] = useState<any[]>([])
 
   const [loading, setLoading] = useState(true);
+
+  const [selectedFuelType, setSelectedFuelType] = useState<"E10" | "E5" | "B7" | "SDV">("E10");
+
   const bottomSheetRef = useRef<BottomSheet>(null)
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
@@ -113,38 +116,6 @@ export default function Map() {
       });
   }, [region]);
 
-  const handleRegionChange = async (newRegion) => {
-    setRegion(newRegion);
-    const radius = 10;
-    try {
-      const stationsFromApi = await getPricesRadius(newRegion.latitude, newRegion.longitude, radius)
-      //map component causes an issue, so used js map constructor
-      const uniqueStations = Array.from(
-        new globalThis.Map(
-           stationsFromApi.map((station) => [station.site_id, station])
-          ). values()
-        );
-      
-      const transformedStations= uniqueStations.map((station: any) => ({
-        id:`${station.site_id}-${station.latitude}-${station.longitude}`, //because there was an issue with duplicate ids!!
-        name: station.brand,
-        latitude: station.latitude,
-        longitude: station.longitude,
-        priceE10: (station.E10) *100, 
-        priceE5: (station.E5) *100,
-        priceB7: (station.B7) *100,
-        priceSDV: (station.SDV) *100,
-        address: station.address,
-
-      }))
-      setPetrolStations(transformedStations);
-    } catch (error) {
-      console.warn("Failed to fetch stations", error)
-    }
-  }
-  
-
-
   if (loading) {
     return <Text>Loading...</Text>;
   }
@@ -152,17 +123,35 @@ export default function Map() {
   return (
     <>
       <GestureHandlerRootView style={styles.container}>
+        <View style={styles.toggleContainer}>
+          {(["E10", "E5", "B7", "SDV"] as const).map((fuel) => {
+            const isActive = selectedFuelType === fuel;
+            return (
+              <TouchableOpacity
+                key={fuel}
+                onPress={() => setSelectedFuelType(fuel)}
+                style={[
+                  styles.toggleButton,
+                  isActive && styles.activeToggleButton
+                ]}
+              >
+                <Text style={styles.toggleButtonText}>{fuel}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
         <MapView
           onPress={handleClosePress}
           style={styles.map}
           region={region}
-
           onRegionChangeComplete={(newRegion) => {
             setRegion(newRegion);
-            handleRegionChange(newRegion);
           }}
         >
-          {petrolStations.map((petrolStation) => (
+          {petrolStations.map((petrolStation) => {
+             const markerPrice = petrolStation[`price${selectedFuelType}`];
+             return(
+            
             <Marker
               onPress={() => {
                 setSelectedStation(petrolStation);
@@ -186,11 +175,11 @@ export default function Map() {
                 }}
               >
                 <Text style={styles.whiteText}>
-                  {parseFloat(petrolStation.priceE10).toFixed(1)}
+                {parseFloat(markerPrice).toFixed(1)}
                 </Text>
               </View>
             </Marker>
-          ))}
+          )})}
         </MapView>
 
         {/* Button to search in current map region */}
@@ -224,6 +213,27 @@ const styles = StyleSheet.create({
   },
   whiteText: {
     color: "white",
+  },
+  toggleContainer: {
+    position: "absolute",
+    top: 40,    // Adjust as needed
+    left: 10,   // Adjust as needed
+    flexDirection: "row",
+    zIndex: 999,
+  },
+  toggleButton: {
+    backgroundColor: "#ccc",
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 5,
+    marginRight: 5,
+  },
+  activeToggleButton: {
+    backgroundColor: "#1E998D",
+  },
+  toggleButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
   container: {
     flex: 1,
